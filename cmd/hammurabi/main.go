@@ -3,10 +3,25 @@ package main
 import (
 	"hammurabi-game/config"
 	"log"
+	"net/http"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/joho/godotenv"
 )
+
+type webhookReqBody struct {
+	Message struct {
+		Text string `json:"text"`
+		Chat struct {
+			ID int64 `json:"id"`
+		} `json:"chat"`
+	} `json:"message"`
+}
+
+type sendMessageReqBody struct {
+	ChatID int64  `json:"chat_id"`
+	Text   string `json:"text"`
+}
 
 func init() {
 	// loads values from .env into the system
@@ -17,53 +32,31 @@ func init() {
 
 func main() {
 	cfg := config.New()
-	log.Println(cfg.Bot.Token)
 
-	// используя токен создаем новый инстанс бота
 	bot, err := tgbotapi.NewBotAPI(cfg.Bot.Token)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
+
+	bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	// u - структура с конфигом для получения апдейтов
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	// используя конфиг u создаем канал в который будут прилетать новые сообщения
-	updates, err := bot.GetUpdatesChan(u)
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-game-bot.herokuapp.com/" + bot.Token))
 	if err != nil {
-		log.Printf("Error: %s", err)
+		log.Fatal(err)
 	}
+	info, err := bot.GetWebhookInfo()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if info.LastErrorDate != 0 {
+		log.Printf("Telegram callback failed: %s", info.LastErrorMessage)
+	}
+	updates := bot.ListenForWebhook("/" + bot.Token)
+	go http.ListenAndServe("0.0.0.0:8443", nil)
 
-	// в канал updates прилетают структуры типа Update
-	// вычитываем их и обрабатываем
 	for update := range updates {
-		// универсальный ответ на любое сообщение
-		reply := "Не знаю что сказать"
-		if update.Message == nil {
-			continue
-		}
-
-		// логируем от кого какое сообщение пришло
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		// свитч на обработку комманд
-		// комманда - сообщение, начинающееся с "/"
-		switch update.Message.Command() {
-		case "start":
-			reply = "Привет. Я телеграм-бот"
-		case "hello":
-			reply = "world"
-		}
-
-		// создаем ответное сообщение
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, reply)
-		// отправляем
-		_, err := bot.Send(msg)
-		if err != nil {
-			log.Printf("Error: %s", err)
-		}
+		log.Printf("%+v\n", update)
 	}
 }
