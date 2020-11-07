@@ -28,7 +28,7 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-game-bot.herokuapp.com/"))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-bot-game.herokuapp.com/"))
 	if err != nil {
 		log.Fatal(err)
 	}
