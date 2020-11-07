@@ -28,7 +28,7 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-game-bot.herokuapp.com/" + bot.Token))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-game-bot.herokuapp.com/"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,9 +39,9 @@ func main() {
 	if info.LastErrorDate != 0 {
 		log.Printf("Telegram callback failed: %s", info.LastErrorMessage)
 	}
-	updates := bot.ListenForWebhook("/" + bot.Token)
+	updates := bot.ListenForWebhook("/")
 	go func() {
-		if err := http.ListenAndServe("0.0.0.0:8443", nil); err != nil {
+		if err := http.ListenAndServe("0.0.0.0:8000", nil); err != nil {
 			log.Fatalf("error: %s", err)
 		}
 	}()
