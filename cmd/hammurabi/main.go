@@ -9,20 +9,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type webhookReqBody struct {
-	Message struct {
-		Text string `json:"text"`
-		Chat struct {
-			ID int64 `json:"id"`
-		} `json:"chat"`
-	} `json:"message"`
-}
-
-type sendMessageReqBody struct {
-	ChatID int64  `json:"chat_id"`
-	Text   string `json:"text"`
-}
-
 func init() {
 	// loads values from .env into the system
 	if err := godotenv.Load("env/.env"); err != nil {
