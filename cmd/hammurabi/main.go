@@ -58,6 +58,10 @@ func main() {
 		// создаем ответное сообщение
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, reply)
 		// отправляем
-		bot.Send(msg)
+		err := bot.Send(msg)
+		if err != nil {
+			log.Printf("unable to send message")
+
+		}
 	}
 }
