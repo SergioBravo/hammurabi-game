@@ -33,6 +33,9 @@ func main() {
 
 	// используя конфиг u создаем канал в который будут прилетать новые сообщения
 	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		log.Printf("Error: %s", err)
+	}
 
 	// в канал updates прилетают структуры типа Update
 	// вычитываем их и обрабатываем
@@ -60,8 +63,7 @@ func main() {
 		// отправляем
 		_, err := bot.Send(msg)
 		if err != nil {
-			log.Printf("unable to send message")
-
+			log.Printf("Error: %s", err)
 		}
 	}
 }
