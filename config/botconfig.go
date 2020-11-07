@@ -10,6 +10,7 @@ type App struct {
 // BotConfig store telegram bot configs
 type BotConfig struct {
 	Token string
+	Port  string
 }
 
 // New returns a new App struct
@@ -17,6 +18,7 @@ func New() *App {
 	return &App{
 		Bot: BotConfig{
 			Token: getEnv("TOKEN", ""),
+			Port:  getEnv("PORT", ""),
 		},
 	}
 }
