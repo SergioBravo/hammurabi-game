@@ -48,6 +48,30 @@ func main() {
 	}()
 
 	for update := range updates {
+		reply := "Не знаю что сказать"
+		if update.Message == nil {
+			continue
+		}
+
+		// логируем от кого какое сообщение пришло
+		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+
+		// свитч на обработку комманд
+		// комманда - сообщение, начинающееся с "/"
+		switch update.Message.Command() {
+		case "start":
+			reply = "Привет. Я телеграм-бот"
+		case "hello":
+			reply = "world"
+		}
+
+		// создаем ответное сообщение
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, reply)
+		// отправляем
+		_, err := bot.Send(msg)
+		if err != nil {
+			log.Fatalf("error: %s", err)
+		}
 		log.Printf("%+v\n", update)
 	}
 }
