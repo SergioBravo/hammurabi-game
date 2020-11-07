@@ -41,7 +41,7 @@ func main() {
 	}
 	updates := bot.ListenForWebhook("/")
 	go func() {
-		if err := http.ListenAndServe("0.0.0.0:8000", nil); err != nil {
+		if err := http.ListenAndServe(":"+cfg.Bot.Port, nil); err != nil {
 			log.Fatalf("error: %s", err)
 		}
 	}()
