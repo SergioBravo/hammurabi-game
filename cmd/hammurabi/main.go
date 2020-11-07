@@ -1,45 +1,31 @@
 package main
 
 import (
+	"hammurabi-game/config"
 	"log"
-	"os"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/joho/godotenv"
 )
 
-var (
-	// глобальная переменная в которой храним токен
-	telegramBotToken string
-)
-
-// init is invoked before main()
 func init() {
 	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("env/.env"); err != nil {
 		log.Print("No .env file found")
 	}
 }
 
 func main() {
-	token, exists := os.LookupEnv("BOT_TOKEN")
+	cfg := config.New()
+	log.Println(cfg.Bot.Token)
 
-	if !exists {
-		log.Print("Telegram Bot Token is required")
-		os.Exit(1)
-	}
 	// используя токен создаем новый инстанс бота
-	bot, err := tgbotapi.NewBotAPI(token)
+	bot, err := tgbotapi.NewBotAPI(cfg.Bot.Token)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	webhook := &tb.Webhook{
-		Listen:   ":" + port,
-		Endpoint: &tb.WebhookEndpoint{PublicURL: publicURL},
-	}
 
 	// u - структура с конфигом для получения апдейтов
 	u := tgbotapi.NewUpdate(0)
