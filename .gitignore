@@ -1,4 +1,5 @@
 .*
 !.gitignore
 !.github
-env/.env
+**env/
+!env/.env.template
