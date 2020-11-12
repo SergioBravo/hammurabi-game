@@ -10,12 +10,12 @@ type WeatherAPIResponse struct {
 	Name       string `json:"name"`
 	Cod        int    `json:"cod"`
 
-	Coord   Coord     `json:"coord"`
-	Weather []Weather `json:"weather"`
-	Main    Main      `json:"main"`
-	Wind    Wind      `json:"wind"`
-	Clouds  Clouds    `json:"clouds"`
-	Sys     System    `json:"sys"`
+	Coord   Coord   `json:"coord"`
+	Weather Weather `json:"weather"`
+	Main    Main    `json:"main"`
+	Wind    Wind    `json:"wind"`
+	Clouds  Clouds  `json:"clouds"`
+	Sys     System  `json:"sys"`
 }
 
 // Coord ...
@@ -40,7 +40,7 @@ type Main struct {
 }
 
 // Weather ...
-type Weather struct {
+type Weather []struct {
 	ID          int    `json:"id"`
 	Main        string `json:"main"`
 	Description string `json:"description"`
