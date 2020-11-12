@@ -103,7 +103,7 @@ func makeRequest(cfg *config.App) (*WeatherAPIResponse, error) {
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		log.Fatalf("Error decoding response: %s", err)
-		return nil, nil
+		return nil, err
 	}
 
 	return &data, nil
