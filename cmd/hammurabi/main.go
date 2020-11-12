@@ -68,7 +68,11 @@ func main() {
 				log.Fatalf("error: %s", err)
 			}
 
-			reply = r.Name
+			reply = fmt.Sprintf(`
+			Погода в данный момент в %s. \n
+			⛅️
+			Температура воздуха %v градусов Цельсия. Ощущается как %v градусов Цельсия.
+			`, r.Name, r.Main.Temp, r.Main.FeelsLike)
 		}
 
 		// создаем ответное сообщение
