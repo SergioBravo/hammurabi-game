@@ -69,10 +69,12 @@ func main() {
 			}
 
 			reply = fmt.Sprintf(`
-			Погода в данный момент в %s. \n
-			⛅️
-			Температура воздуха %v градусов Цельсия. Ощущается как %v градусов Цельсия.
-			`, r.Name, r.Main.Temp, r.Main.FeelsLike)
+			Город %s. \n
+			В данный момент %s ⛅️
+			Температура воздуха 🌡%v градусов Цельсия.\nОщущается как 🌡%v градусов Цельсия.\n
+			Влажность %v %. Атмосферное давление %v мм ртутного столба.\n
+			🌬Ветер %s. Скорость ветра %v метров в секунду.\n
+			`, r.Name, r.Weather.Description, r.Main.Temp, r.Main.FeelsLike, r.Main.Humidity, r.Main.Pressure, getWindDirection(r.Wind.Deg), r.Wind.Speed)
 		}
 
 		// создаем ответное сообщение
@@ -112,7 +114,7 @@ type WeatherAPIResponse struct {
 		Lon float64 `json:"lon"`
 		Lat float64 `json:"lat"`
 	} `json:"coord"`
-	Weather []struct {
+	Weather struct {
 		ID          int    `json:"id"`
 		Main        string `json:"main"`
 		Description string `json:"description"`
@@ -148,4 +150,44 @@ type WeatherAPIResponse struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
 	Cod      int    `json:"cod"`
+}
+
+func getWindDirection(deg int) string {
+
+	switch {
+	case 11 < deg && deg <= 33:
+		return "северо северо восточный"
+	case 33 < deg && deg <= 56:
+		return "северо восточный"
+	case 56 < deg && deg <= 76:
+		return "восточно северо восточный"
+	case 76 < deg && deg <= 101:
+		return "Восточный"
+	case 101 < deg && deg <= 123:
+		return "восточно юго восточный"
+	case 123 < deg && deg <= 146:
+		return "юго восточный"
+	case 146 < deg && deg <= 168:
+		return "юго юго восточный"
+	case 168 < deg && deg <= 191:
+		return "южный"
+	case 191 < deg && deg <= 213:
+		return "юго юго западный"
+	case 213 < deg && deg <= 236:
+		return "югозападный"
+	case 236 < deg && deg <= 258:
+		return "западно юго западный"
+	case 258 < deg && deg <= 281:
+		return "западный"
+	case 281 < deg && deg <= 303:
+		return "западно северо западный"
+	case 303 < deg && deg <= 326:
+		return "северо западный"
+	case 326 < deg && deg <= 348:
+		return "северо сверо западный"
+	case 348 < deg || deg <= 11:
+		return "северный"
+	}
+
+	return ""
 }
