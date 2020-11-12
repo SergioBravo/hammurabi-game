@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"hammurabi-game/config"
 	"log"
 	"net/http"
@@ -28,7 +30,7 @@ func main() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://hammurabi-bot-game.herokuapp.com/" + cfg.Bot.Token))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook(cfg.Bot.URL + cfg.Bot.Token))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,16 +55,20 @@ func main() {
 			continue
 		}
 
-		// логируем от кого какое сообщение пришло
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-		// свитч на обработку комманд
-		// комманда - сообщение, начинающееся с "/"
 		switch update.Message.Command() {
 		case "start":
 			reply = "Привет. Я телеграм-бот"
 		case "hello":
 			reply = "world"
+		case "weather":
+			r, err := makeRequest(cfg)
+			if err != nil {
+				log.Fatalf("error: %s", err)
+			}
+
+			reply = r.Name
 		}
 
 		// создаем ответное сообщение
@@ -74,4 +80,68 @@ func main() {
 		}
 		log.Printf("%+v\n", update)
 	}
+}
+
+func makeRequest(cfg *config.App) (*WeatherAPIResponse, error) {
+	urlPath := cfg.WeatherAPI.URL + "?" + "id=2172797&appid=" + cfg.WeatherAPI.Token
+	resp, err := http.Get(urlPath)
+	if err != nil {
+		return nil, err
+	} else if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API request status: %s",
+			http.StatusText(resp.StatusCode))
+	}
+
+	var data WeatherAPIResponse
+
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return nil, nil
+	}
+
+	return &data, nil
+}
+
+// WeatherAPIResponse ...
+type WeatherAPIResponse struct {
+	Coord struct {
+		Lon float64 `json:"lon"`
+		Lat float64 `json:"lat"`
+	} `json:"coord"`
+	Weather []struct {
+		ID          int    `json:"id"`
+		Main        string `json:"main"`
+		Description string `json:"description"`
+		Icon        string `json:"icon"`
+	} `json:"weather"`
+	Base string `json:"base"`
+	Main struct {
+		Temp      float64 `json:"temp"`
+		FeelsLike float64 `json:"feels_like"`
+		TempMin   float64 `json:"temp_min"`
+		TempMax   float64 `json:"temp_max"`
+		Pressure  int     `json:"pressure"`
+		Humidity  int     `json:"humidity"`
+	} `json:"main"`
+	Visibility int `json:"visibility"`
+	Wind       struct {
+		Speed float64 `json:"speed"`
+		Deg   int     `json:"deg"`
+	} `json:"wind"`
+	Clouds struct {
+		All int `json:"all"`
+	} `json:"clouds"`
+	Dt  int `json:"dt"`
+	Sys struct {
+		Type    int     `json:"type"`
+		ID      int     `json:"id"`
+		Message float64 `json:"message"`
+		Country string  `json:"country"`
+		Sunrise int     `json:"sunrise"`
+		Sunset  int     `json:"sunset"`
+	} `json:"sys"`
+	Timezone int    `json:"timezone"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Cod      int    `json:"cod"`
 }
