@@ -68,7 +68,8 @@ func main() {
 				log.Fatalf("error: %s", err)
 			}
 
-			windDirection := getWindDirection(r.Wind.Deg),
+			windDirection := getWindDirection(r.Wind.Deg)
+			log.Println(windDirection)
 
 			reply = fmt.Sprintf(`
 			Город %v. \n
