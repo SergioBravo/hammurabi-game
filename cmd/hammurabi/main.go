@@ -68,13 +68,15 @@ func main() {
 				log.Fatalf("error: %s", err)
 			}
 
+			windDirection := getWindDirection(r.Wind.Deg),
+
 			reply = fmt.Sprintf(`
 			Город %v. \n
 			В данный момент %v ⛅️
 			Температура воздуха 🌡%v градусов Цельсия.\nОщущается как 🌡%v градусов Цельсия.\n
 			Влажность %v процента. Атмосферное давление %v мм ртутного столба.\n
 			🌬Ветер %v. Скорость ветра %v метров в секунду.\n
-			`, r.Name, r.Weather.Description, r.Main.Temp, r.Main.FeelsLike, r.Main.Humidity, r.Main.Pressure, getWindDirection(r.Wind.Deg), r.Wind.Speed)
+			`, r.Name, r.Weather.Description, r.Main.Temp, r.Main.FeelsLike, r.Main.Humidity, r.Main.Pressure, windDirection, r.Wind.Speed)
 		}
 
 		// создаем ответное сообщение
@@ -153,7 +155,6 @@ type WeatherAPIResponse struct {
 }
 
 func getWindDirection(deg int) string {
-
 	switch {
 	case 11 < deg && deg <= 33:
 		return "северо северо восточный"
