@@ -33,6 +33,6 @@ func WeatherResponse(cfg *config.App) string {
 		r.Main.Pressure,
 		utils.GetWindDirection(r.Wind.Deg),
 		r.Wind.Speed,
-		time.Unix(int64(r.Sys.Sunrise), 0),
-		time.Unix(int64(r.Sys.Sunset), 0))
+		time.Unix(int64(r.Sys.Sunrise+r.Timezone), 0).Format("17:06:06"),
+		time.Unix(int64(r.Sys.Sunset+r.Timezone), 0).UTC().Format("17:06:06"))
 }
