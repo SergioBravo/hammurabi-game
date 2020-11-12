@@ -20,13 +20,13 @@ func GetCurrentWeather(cfg *config.App) (*models.WeatherAPIResponse, error) {
 			http.StatusText(resp.StatusCode))
 	}
 
-	var data *models.WeatherAPIResponse
+	var data models.WeatherAPIResponse
 
-	err = json.NewDecoder(resp.Body).Decode(data)
+	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		log.Fatalf("Error decoding response: %s", err)
 		return nil, err
 	}
 
-	return data, nil
+	return &data, nil
 }
