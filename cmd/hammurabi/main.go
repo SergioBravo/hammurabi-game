@@ -83,7 +83,7 @@ func main() {
 }
 
 func makeRequest(cfg *config.App) (*WeatherAPIResponse, error) {
-	urlPath := cfg.WeatherAPI.URL + "?" + "id=2172797&appid=" + cfg.WeatherAPI.Token
+	urlPath := cfg.WeatherAPI.URL + "?" + "id=" + cfg.WeatherAPI.CityID + "&appid=" + cfg.WeatherAPI.Token + "&lang=ru"
 	resp, err := http.Get(urlPath)
 	if err != nil {
 		return nil, err

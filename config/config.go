@@ -17,8 +17,9 @@ type BotConfig struct {
 
 // WeatherAPI ...
 type WeatherAPI struct {
-	Token string
-	URL   string
+	Token  string
+	URL    string
+	CityID string
 }
 
 // New returns a new App struct
@@ -31,8 +32,9 @@ func New() *App {
 		},
 
 		WeatherAPI: WeatherAPI{
-			Token: getEnv("OPEN_WEATHER_TOKEN", ""),
-			URL:   getEnv("OPEN_WEATHER_URL", ""),
+			Token:  getEnv("OPEN_WEATHER_TOKEN", ""),
+			URL:    getEnv("OPEN_WEATHER_URL", ""),
+			CityID: getEnv("CITY_ID", ""),
 		},
 	}
 }
