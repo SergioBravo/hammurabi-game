@@ -13,25 +13,25 @@ func GetWeatherIcon(weatherList []models.Weather) (string, string) {
 		w += weather.Description
 		switch weather.Main {
 		case "Clouds":
-			icon += ":partly_sunny:"
+			icon += "⛅️"
 		case "Clear":
-			icon += ":sunny:"
+			icon += "☀️"
 		case "Mist":
 		case "Fog":
 		case "Smoke":
 		case "Haze":
 		case "Dust":
 		case "Sand":
-			icon += ":fog:"
+			icon += "🌫"
 		case "Squall":
-			icon += ":dash:"
+			icon += "💨"
 		case "Thunderstorm":
-			icon += ":thunder_cloud_and_rain:"
+			icon += "⛈"
 		case "Drizzle":
 		case "Rain":
-			icon += ":cloud_with_rain:"
+			icon += "🌧"
 		case "Snow":
-			icon += ":cloud_with_snow:"
+			icon += "🌨"
 		}
 	}
 
