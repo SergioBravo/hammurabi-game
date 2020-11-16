@@ -87,7 +87,7 @@ func main() {
 	}
 }
 
-func sendWeather(bot tgbotapi.Bot, cfg *config.App) {
+func sendWeather(bot tgbotapi, cfg *config.App) {
 	reply := app.WeatherResponse(cfg)
 	msg := tgbotapi.NewMessage(ChatID, reply)
 	// отправляем
