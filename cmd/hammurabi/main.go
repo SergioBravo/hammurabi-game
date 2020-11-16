@@ -5,10 +5,14 @@ import (
 	"hammurabi-game/internal/app"
 	"log"
 	"net/http"
+	"time"
 
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/joho/godotenv"
 )
+
+// ChatID ...
+const ChatID = 191155356
 
 func init() {
 	// loads values from .env into the system
@@ -48,6 +52,13 @@ func main() {
 		}
 	}()
 
+	go func() {
+		for {
+			<-time.After(5 * time.Minute)
+			go sendWeather(bot, cfg)
+		}
+	}()
+
 	for update := range updates {
 		reply := "Не знаю что сказать"
 		if update.Message == nil {
@@ -73,5 +84,15 @@ func main() {
 			log.Fatalf("error: %s", err)
 		}
 		log.Printf("%+v\n", update)
+	}
+}
+
+func sendWeather(bot tgbotapi.Bot, cfg *config.App) {
+	reply := app.WeatherResponse(cfg)
+	msg := tgbotapi.NewMessage(ChatID, reply)
+	// отправляем
+	_, err := bot.Send(msg)
+	if err != nil {
+		log.Fatalf("error: %s", err)
 	}
 }
